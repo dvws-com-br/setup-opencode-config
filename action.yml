@@ -1,0 +1,58 @@
+name: Setup OpenCode config
+
+description: Generate OpenCode configuration
+
+inputs:
+  provider-npm:
+    description: The provider npm package to use for provider
+    required: true
+    default: "@ai-sdk/openai-compatible"
+
+  provider-name:
+    description: The provider name to use for provider
+    required: true
+  
+  provider-base-url:
+    description: Provider base URL
+    required: true
+
+  provider-api-key-name:
+    description: Name of the environment variable containing the API key
+    required: true
+
+  provider-model-name:
+    description: The provider model name to use for provider
+    required: true
+  
+  provider-model-limit-context:
+    description: The context limit for the provider model
+    required: true
+
+  provider-model-limit-output:
+    description: The output limit for the provider model
+    required: true
+
+  provider-model-options-reasoningEffort:
+    description: The reasoning effort for the provider model
+    required: true
+
+  provider-model-options-textVerbosity:
+    description: The text verbosity for the provider model
+    required: true
+
+  provider-model-options-reasoningSummary:
+    description: The reasoning summary for the provider model
+    required: true
+
+  permission-json:
+    description: The permission JSON for the OpenCode configuration
+    required: false
+
+
+outputs:
+  config:
+    description: OpenCode JSON configuration
+
+runs:
+  using: node20
+  main: dist/index.js
