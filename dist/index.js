@@ -25643,111 +25643,6 @@ module.exports = {
 
 /***/ }),
 
-/***/ 9407:
-/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
-
-"use strict";
-
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || (function () {
-    var ownKeys = function(o) {
-        ownKeys = Object.getOwnPropertyNames || function (o) {
-            var ar = [];
-            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
-            return ar;
-        };
-        return ownKeys(o);
-    };
-    return function (mod) {
-        if (mod && mod.__esModule) return mod;
-        var result = {};
-        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
-        __setModuleDefault(result, mod);
-        return result;
-    };
-})();
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-const core = __importStar(__nccwpck_require__(7484));
-async function run() {
-    try {
-        const providerNpm = core.getInput("provider-npm");
-        const baseUrl = core.getInput("provider-base-url");
-        const apikeyName = core.getInput("provider-api-key-name");
-        const providerName = core.getInput("provider-name");
-        const providerModelName = core.getInput("provider-model-name");
-        const providerModelLimitContext = core.getInput("provider-model-limit-context");
-        const providerModelLimitOutput = core.getInput("provider-model-limit-output");
-        const providerModelOptionsReasoningEffort = core.getInput("provider-model-options-reasoningEffort");
-        const providerModelOptionsTextVerbosity = core.getInput("provider-model-options-textVerbosity");
-        const providerModelOptionsReasoningSummary = core.getInput("provider-model-options-reasoningSummary");
-        const permissionJsonInput = core.getInput("permission-json");
-        const permissions = getPermissions(permissionJsonInput);
-        const config = {
-            provider: {
-                [providerName]: {
-                    npm: providerNpm,
-                    name: providerName,
-                    options: {
-                        baseURL: baseUrl,
-                        "apiKey": `{env:${apikeyName}}`
-                    },
-                    models: {
-                        [providerModelName]: {
-                            options: {
-                                reasoningEffort: providerModelOptionsReasoningEffort,
-                                textVerbosity: providerModelOptionsTextVerbosity,
-                                reasoningSummary: providerModelOptionsReasoningSummary,
-                            },
-                            limit: {
-                                context: parseInt(providerModelLimitContext),
-                                output: parseInt(providerModelLimitOutput),
-                            },
-                        },
-                    },
-                },
-            },
-        };
-        if (permissions) {
-            config["permission"] = permissions;
-        }
-        core.setOutput("config", JSON.stringify(config, null, 2));
-    }
-    catch (error) {
-        core.setFailed(error instanceof Error ? error.message : String(error));
-    }
-}
-const getPermissions = (permissionJsonInput) => {
-    if (permissionJsonInput) {
-        try {
-            return JSON.parse(permissionJsonInput);
-        }
-        catch (error) {
-            core.setFailed(`Invalid permission JSON: ${error instanceof Error ? error.message : String(error)}`);
-            return null;
-        }
-    }
-    return null;
-};
-void run();
-
-
-/***/ }),
-
 /***/ 2613:
 /***/ ((module) => {
 
@@ -27659,12 +27554,100 @@ module.exports = parseParams
 /******/ 	if (typeof __nccwpck_require__ !== 'undefined') __nccwpck_require__.ab = __dirname + "/";
 /******/ 	
 /************************************************************************/
-/******/ 	
-/******/ 	// startup
-/******/ 	// Load entry module and return exports
-/******/ 	// This entry module is referenced by other modules so it can't be inlined
-/******/ 	var __webpack_exports__ = __nccwpck_require__(9407);
-/******/ 	module.exports = __webpack_exports__;
-/******/ 	
+var __webpack_exports__ = {};
+// This entry need to be wrapped in an IIFE because it need to be in strict mode.
+(() => {
+"use strict";
+
+// EXTERNAL MODULE: ./node_modules/@actions/core/lib/core.js
+var core = __nccwpck_require__(7484);
+;// CONCATENATED MODULE: ./src/config.ts
+const DEFAULT_INPUT = {
+    providerNpm: "@ai-sdk/openai-compatible",
+    baseUrl: "",
+    apikeyName: "",
+    providerName: "",
+    providerModelName: "",
+    providerModelLimitContext: "",
+    providerModelLimitOutput: "",
+    providerModelOptionsReasoningEffort: "",
+    providerModelOptionsTextVerbosity: "",
+    providerModelOptionsReasoningSummary: "",
+    permissionJsonInput: null,
+};
+function buildConfig(input) {
+    const values = { ...DEFAULT_INPUT, ...input };
+    const permissions = getPermissions(values.permissionJsonInput);
+    const config = {
+        provider: {
+            [values.providerName]: {
+                npm: values.providerNpm,
+                name: values.providerName,
+                options: {
+                    baseURL: values.baseUrl,
+                    "apiKey": `{env:${values.apikeyName}}`
+                },
+                models: {
+                    [values.providerModelName]: {
+                        options: {
+                            reasoningEffort: values.providerModelOptionsReasoningEffort,
+                            textVerbosity: values.providerModelOptionsTextVerbosity,
+                            reasoningSummary: values.providerModelOptionsReasoningSummary,
+                        },
+                        limit: {
+                            context: parseInt(values.providerModelLimitContext),
+                            output: parseInt(values.providerModelLimitOutput),
+                        },
+                    },
+                },
+            },
+        },
+    };
+    if (permissions) {
+        config["permission"] = permissions;
+    }
+    return config;
+}
+const getPermissions = (permissionJsonInput) => {
+    if (permissionJsonInput) {
+        try {
+            return JSON.parse(permissionJsonInput);
+        }
+        catch (error) {
+            throw new Error(`Invalid permission JSON: ${error instanceof Error ? error.message : String(error)}`);
+        }
+    }
+    return null;
+};
+
+;// CONCATENATED MODULE: ./src/index.ts
+
+
+async function run() {
+    try {
+        const config = buildConfig({
+            providerNpm: core.getInput("provider-npm"),
+            baseUrl: core.getInput("provider-base-url"),
+            apikeyName: core.getInput("provider-api-key-name"),
+            providerName: core.getInput("provider-name"),
+            providerModelName: core.getInput("provider-model-name"),
+            providerModelLimitContext: core.getInput("provider-model-limit-context"),
+            providerModelLimitOutput: core.getInput("provider-model-limit-output"),
+            providerModelOptionsReasoningEffort: core.getInput("provider-model-options-reasoningEffort"),
+            providerModelOptionsTextVerbosity: core.getInput("provider-model-options-textVerbosity"),
+            providerModelOptionsReasoningSummary: core.getInput("provider-model-options-reasoningSummary"),
+            permissionJsonInput: core.getInput("permission-json"),
+        });
+        core.setOutput("config", JSON.stringify(config, null, 2));
+    }
+    catch (error) {
+        core.setFailed(error instanceof Error ? error.message : String(error));
+    }
+}
+void run();
+
+})();
+
+module.exports = __webpack_exports__;
 /******/ })()
 ;
