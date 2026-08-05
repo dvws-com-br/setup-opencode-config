@@ -54,11 +54,13 @@ jobs:
           permission-json: '{"ask": "always"}'
 
       - name: Validate generated config
+        env:
+          CONFIG: ${{ steps.opencode.outputs.config }}
         run: |
-          echo "${{ steps.opencode.outputs.config }}"
-          echo "${{ steps.opencode.outputs.config }}" | grep -q '"test-provider"'
-          echo "${{ steps.opencode.outputs.config }}" | grep -q '"baseURL": "https://api.example.com/v1"'
-          echo "${{ steps.opencode.outputs.config }}" | grep -q '"apiKey": "{env:MY_API_KEY}"'
-          echo "${{ steps.opencode.outputs.config }}" | grep -q '"context": 32000'
-          echo "${{ steps.opencode.outputs.config }}" | grep -q '"permission"'
+          echo "$CONFIG"
+          echo "$CONFIG" | grep -q '"test-provider"'
+          echo "$CONFIG" | grep -q '"baseURL": "https://api.example.com/v1"'
+          echo "$CONFIG" | grep -q '"apiKey": "{env:MY_API_KEY}"'
+          echo "$CONFIG" | grep -q '"context": 32000'
+          echo "$CONFIG" | grep -q '"permission"'
           echo "config OK"
