@@ -1,5 +1,8 @@
 # Setup OpenCode config
 
+[![Latest Version on Packagist](https://img.shields.io/github/v/tag/dvws-com-br/setup-opencode-config)](https://github.com/dvws-com-br/setup-opencode-config)
+[![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/dvws-com-br/setup-opencode-config/test.yml?branch=main&label=tests&style=flat-square)](https://github.com/dvws-com-br/setup-opencode-config/actions?query=workflow%3Atest+branch%3Amain)
+
 A GitHub Action that generates an [OpenCode](https://opencode.ai) configuration from action inputs. The generated config is exposed as an output for use by subsequent steps in your workflow.
 
 ## Usage
