@@ -6,7 +6,7 @@ A GitHub Action that generates an [OpenCode](https://opencode.ai) configuration 
 
 ```yaml
 steps:
-  - uses: your-org/setup-opencode-config@v1
+  - uses: dvws-com-br/setup-opencode-config@v1
     id: opencode
     with:
       provider-name: "my-provider"
