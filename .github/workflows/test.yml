@@ -1,0 +1,66 @@
+name: Test
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  unit:
+    name: Unit tests and lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - run: npm ci
+
+      - name: Run tests
+        run: npm test
+
+      - name: Run lint
+        run: npm run lint
+
+      - name: Verify bundle is up to date
+        run: |
+          npm run build
+          git diff --exit-code dist/ || { echo "dist/ is stale, run npm run build and commit"; exit 1; }
+
+  action:
+    name: Action smoke test
+    runs-on: ubuntu-latest
+    env:
+      MY_API_KEY: ${{ secrets.MY_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run the action
+        id: opencode
+        uses: ./
+        with:
+          provider-name: "test-provider"
+          provider-base-url: "https://api.example.com/v1"
+          provider-api-key-name: "MY_API_KEY"
+          provider-model-name: "test-model"
+          provider-model-limit-context: "32000"
+          provider-model-limit-output: "4096"
+          provider-model-options-reasoningEffort: "high"
+          provider-model-options-textVerbosity: "concise"
+          provider-model-options-reasoningSummary: "disabled"
+          permission-json: '{"ask": "always"}'
+
+      - name: Validate generated config
+        env:
+          CONFIG: ${{ steps.opencode.outputs.config }}
+        run: |
+          echo "$CONFIG"
+          echo "$CONFIG" | grep -q '"test-provider"'
+          echo "$CONFIG" | grep -q '"baseURL": "https://api.example.com/v1"'
+          echo "$CONFIG" | grep -q '"apiKey": "{env:MY_API_KEY}"'
+          echo "$CONFIG" | grep -q '"context": 32000'
+          echo "$CONFIG" | grep -q '"permission"'
+          echo "config OK"

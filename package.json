@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "build": "ncc build src/index.ts -o dist",
-    "lint": "tsc --noEmit"
+    "lint": "tsc --noEmit",
+    "test": "vitest run"
   },
   "dependencies": {
     "@actions/core": "^1.11.1"
@@ -12,6 +13,7 @@
   "devDependencies": {
     "@types/node": "^24.0.0",
     "@vercel/ncc": "^0.38.3",
-    "typescript": "^5.9.0"
+    "typescript": "^5.9.0",
+    "vitest": "^4.1.10"
   }
 }
