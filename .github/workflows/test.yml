@@ -10,9 +10,9 @@ jobs:
     name: Unit tests and lint
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v5
         with:
           node-version: 24
           cache: npm
@@ -36,7 +36,7 @@ jobs:
     env:
       MY_API_KEY: ${{ secrets.MY_API_KEY }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Run the action
         id: opencode
@@ -51,16 +51,47 @@ jobs:
           provider-model-options-reasoningEffort: "high"
           provider-model-options-textVerbosity: "concise"
           provider-model-options-reasoningSummary: "disabled"
-          permission-json: '{"ask": "always"}'
+          permission-json: '[{"action":"shell","resource":"git push *","effect":"ask"}]'
+          model-default: "true"
 
       - name: Validate generated config
         env:
           CONFIG: ${{ steps.opencode.outputs.config }}
         run: |
           echo "$CONFIG"
-          echo "$CONFIG" | grep -q '"test-provider"'
+          echo "$CONFIG" | grep -q '"$schema": "https://opencode.ai/config.json"'
+          echo "$CONFIG" | grep -q '"providers"'
+          echo "$CONFIG" | grep -q '"package": "@opencode/ai/providers/openai-compatible"'
           echo "$CONFIG" | grep -q '"baseURL": "https://api.example.com/v1"'
           echo "$CONFIG" | grep -q '"apiKey": "{env:MY_API_KEY}"'
+          echo "$CONFIG" | grep -q '"env": \['
           echo "$CONFIG" | grep -q '"context": 32000'
-          echo "$CONFIG" | grep -q '"permission"'
+          echo "$CONFIG" | grep -q '"permissions"'
+          echo "$CONFIG" | grep -q '"model": "test-provider/test-model"'
           echo "config OK"
+
+      - name: Run the action with a legacy @ai-sdk package
+        id: opencode-legacy
+        uses: ./
+        with:
+          provider-npm: "@ai-sdk/openai-compatible"
+          provider-name: "legacy-provider"
+          provider-base-url: "https://api.example.com/v1"
+          provider-api-key-name: "MY_API_KEY"
+          provider-model-name: "legacy-model"
+          provider-model-limit-context: "32000"
+          provider-model-limit-output: "4096"
+          provider-model-options-reasoningEffort: "high"
+          provider-model-options-textVerbosity: "concise"
+          provider-model-options-reasoningSummary: "disabled"
+          permission-json: '{"bash": {"git push *": "ask"}}'
+
+      - name: Validate legacy package mapping and permission conversion
+        env:
+          CONFIG: ${{ steps.opencode-legacy.outputs.config }}
+        run: |
+          echo "$CONFIG"
+          echo "$CONFIG" | grep -q '"package": "aisdk:@ai-sdk/openai-compatible"'
+          echo "$CONFIG" | grep -q '"permissions"'
+          echo "$CONFIG" | grep -q '"action": "shell"'
+          echo "legacy config OK"

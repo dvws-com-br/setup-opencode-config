@@ -4,9 +4,13 @@ description: Generate OpenCode configuration
 
 inputs:
   provider-npm:
-    description: The provider npm package to use for provider
+    description: >-
+      Runtime provider package. Native OpenCode packages
+      (@opencode/ai/providers/*) and custom packages are used as-is; legacy
+      @ai-sdk/* packages are automatically prefixed with "aisdk:" for OpenCode
+      V2.
     required: true
-    default: "@ai-sdk/openai-compatible"
+    default: "@opencode/ai/providers/openai-compatible"
 
   provider-name:
     description: The provider name to use for provider
@@ -45,8 +49,18 @@ inputs:
     required: true
 
   permission-json:
-    description: The permission JSON for the OpenCode configuration
+    description: >-
+      Permissions for the OpenCode configuration. Pass the OpenCode V2 ordered
+      array of {action, resource, effect} entries; legacy V1 tool-grouped maps
+      are converted automatically.
     required: false
+
+  model-default:
+    description: >-
+      Set to "true" to also emit a top-level "model" default set to
+      <provider-name>/<provider-model-name>.
+    required: false
+    default: "false"
 
 
 outputs:
@@ -54,5 +68,5 @@ outputs:
     description: OpenCode JSON configuration
 
 runs:
-  using: node20
+  using: node24
   main: dist/index.js

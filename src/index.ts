@@ -15,6 +15,7 @@ async function run(): Promise<void> {
             providerModelOptionsTextVerbosity: core.getInput("provider-model-options-textVerbosity"),
             providerModelOptionsReasoningSummary: core.getInput("provider-model-options-reasoningSummary"),
             permissionJsonInput: core.getInput("permission-json"),
+            modelDefault: core.getInput("model-default"),
         });
 
         core.setOutput("config", JSON.stringify(config, null, 2));
